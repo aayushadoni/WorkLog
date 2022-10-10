@@ -11,6 +11,7 @@
     "ecmaVersion": 12,
     "sourceType": "module"
   },
+  
   "plugins": ["react", "prettier"],
   "rules": {
     "prettier/prettier": [
@@ -31,4 +32,5 @@
     "react/jsx-curly-spacing": [2, "never"]
   },
   "settings": { "import/resolver": { "node": { "paths": ["src"] } } }
+  
 }

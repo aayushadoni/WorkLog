@@ -1,20 +1,4 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 import { useEffect } from "react";
-
 // react-router-dom components
 import { useLocation, NavLink } from "react-router-dom";
 
@@ -136,10 +120,20 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
         />
       );
     }
+    else if (type === "navbar") {
+      returnValue = (
+        <div> </div>
+      )
+    }
 
     return returnValue;
   });
 
+  const Logout = ()=>{
+    localStorage.removeItem('jwt');
+    localStorage.removeItem('id');
+    window.location = "/authentication/sign-in";
+  }
   return (
     <SidenavRoot
       {...rest}
@@ -160,16 +154,9 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
             <Icon sx={{ fontWeight: "bold" }}>close</Icon>
           </MDTypography>
         </MDBox>
-        <MDBox component={NavLink} to="/" display="flex" alignItems="center">
-          {brand && <MDBox component="img" src={brand} alt="Brand" width="2rem" />}
-          <MDBox
-            width={!brandName && "100%"}
-            sx={(theme) => sidenavLogoLabel(theme, { miniSidenav })}
-          >
-            <MDTypography component="h6" variant="button" fontWeight="medium" color={textColor}>
-              {brandName}
-            </MDTypography>
-          </MDBox>
+        <MDBox >
+          
+         <MDBox component="img" src="https://img.icons8.com/external-smashingstocks-fill-lineal-smashing-stocks/67/FFFFFF/external-team-work-networking-smashingstocks-fill-lineal-smashing-stocks.png" alt="Brand" width="5rem" />
         </MDBox>
       </MDBox>
       <Divider
@@ -181,15 +168,13 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
       <List>{renderRoutes}</List>
       <MDBox p={2} mt="auto">
         <MDButton
-          component="a"
-          href="https://www.creative-tim.com/product/material-dashboard-pro-react"
-          target="_blank"
+          onClick ={()=>{Logout()}}
           rel="noreferrer"
           variant="gradient"
           color={sidenavColor}
           fullWidth
         >
-          upgrade to pro
+          Logout
         </MDButton>
       </MDBox>
     </SidenavRoot>

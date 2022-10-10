@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import  {useParams} from "react-router-dom";
 import axios from "axios";
 import DatePicker from "react-datepicker";
 
@@ -20,11 +19,13 @@ import Footer from "examples/Footer";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie, Bar } from "react-chartjs-2";
 ChartJS.register(ArcElement, Tooltip, Legend);
+const employeeId  =  localStorage.getItem("id");
+const staus = localStorage.getItem('status');
 function Overview() {
-  let { id } = useParams();
-  const employeeId  =  id;
-  const staus = localStorage.getItem('status');
   const [loading, setloading] = useState(false);
+  const [show, setShow] = useState(false);
+  const [taskDescription, setTaskDescription] = useState("");
+  const [taskType, setTaskType] = useState("");
   const [date, setdate] = useState("");
   const [date1, setdate1] = useState("");
   const [date2, setdate2] = useState(new Date());
@@ -34,6 +35,9 @@ function Overview() {
   const [WorkData ,setWorkData] = useState([]);
   const [BreakData ,setBreakData] = useState([]);
   const [MeetData ,setMeetData] = useState([]);
+  const [duration, setduration] = useState("");
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
   const token = localStorage.getItem("jwt");
   const url = "http://localhost:8000";
   console.log(staus)
@@ -43,6 +47,7 @@ function Overview() {
   var meet = [];
   const headers = {
       "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
     };
     let string = 'n';
   const getDateperday = (e) =>{
@@ -145,6 +150,32 @@ function Overview() {
     };
 
 
+  const Submit = () => {
+    setShow(false);
+    axios
+      .post(`${url}/task/`, {
+        taskDescription: taskDescription,
+        taskType: taskType,
+        employeeId: employeeId,
+        date: date,
+        time: time,
+        duration: duration,
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => {
+        console.log(res.data.success);
+        if (res.data.success == true) {
+          alert("user added successful");
+          window.location.reload();
+          window.location.reload();
+        } else alert("error in  adding user");
+      })
+      .catch((err) => {
+        console.log("Error " + err);
+      });
+  };
   function getdate(str) {
     var date = new Date(str),
       mnth = ("0" + (date.getMonth() + 1)).slice(-2),
@@ -178,7 +209,7 @@ function Overview() {
     setTimeout(() => {
       setloading(false);
     }, 1500);
-  }, []);
+  }, [date2]);
 
   if (token) {
     return (
@@ -205,10 +236,21 @@ function Overview() {
               textAlign="center"
             >
               <MDTypography display="block" variant="button" color="white" my={1}>
-                <h6>Employee Dashboard</h6>
+                <h6>Employee Task Report </h6>
               </MDTypography>
             </MDBox>
             <MDBox className='d-flex justify-content-center align-item-center'>
+            <MDButton
+              size="medium"
+              variant="outlined"
+              color="dark"
+              fontWeight="medium"
+              className="my-5 mx-5"
+              textGradient
+              onClick={handleShow}
+            >
+              Add Task
+            </MDButton>
             <MDBox className='my-5'>
             <DatePicker
                     dateFormat="dd-MM-yyyy"
@@ -219,7 +261,72 @@ function Overview() {
              
             </MDBox>
             </MDBox>
-         
+            <Modal
+              show={show}
+              onHide={handleClose}
+              aria-labelledby="contained-modal-title-vcenter"
+              centered
+            >
+              <Modal.Header closeButton>
+                <Modal.Title>Enter Teask Details</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <MDBox mb={2}>
+                  <MDInput
+                    type="text"
+                    onChange={(e) => setTaskDescription(e.target.value)}
+                    label="Enter Task Description"
+                    variant="standard"
+                    fullWidth
+                  />
+                </MDBox>
+                <h6
+                  className="text-sm-left text-secondary"
+                  style={{ fontSize: "14px", fontWeight: "400" }}
+                >
+                  Enter Task Type
+                </h6>
+                <Form.Select
+                  aria-label="Default select example"
+                  onChange={(e) => setTaskType(e.target.value)}
+                >
+                  <option value={"default"}>Choose an Task Type</option>
+                  <option value="Break">Break</option>
+                  <option value="Work">Work</option>
+                  <option value="Meeting">Meeting</option>
+                </Form.Select>
+                <MDBox my={2}>
+                  <h6
+                    className="text-sm-left text-secondary"
+                    style={{ fontSize: "14px", fontWeight: "400" }}
+                  >
+                    Enter Date
+                  </h6>
+                  <DatePicker
+                    dateFormat="dd-MM-yyyy h:mm aa"
+                    selected={date1}
+                    onChange={(date) => Dateandtime(date)}
+                    showTimeSelect
+                    maxDate={new Date()}
+                  />
+                </MDBox>
+                <MDBox mb={2}>
+                  <MDInput
+                    type="text"
+                    onChange={(e) => setduration(e.target.value)}
+                    label="Enter Duration (Minutes)"
+                    variant="standard"
+                    fullWidth
+                  />
+                </MDBox>
+              </Modal.Body>
+
+              <Modal.Footer>
+                <Button variant="primary" onClick={Submit}>
+                  Save Changes
+                </Button>
+              </Modal.Footer>
+            </Modal>
             <MDBox>
               <div className="row px-5 my-5 d-flex justify-content-center">
                 <div className=" px-2 col-md-5 col-lg-5">
