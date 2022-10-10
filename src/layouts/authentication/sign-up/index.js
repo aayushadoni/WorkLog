@@ -22,7 +22,8 @@ import bgImage from "assets/images/bg-sign-up-cover.jpeg";
 function Cover() {
   const [loading,setloading] = useState(false)
 
-  const url = "http://localhost:8000";
+  const url = "https://work-log-backend.herokuapp.com";
+
 
   const [username,setName] = useState('');
   const [email, setemail] = useState('')

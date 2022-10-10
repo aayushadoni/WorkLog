@@ -22,12 +22,11 @@ import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 
 function Basic() {
   const url = "https://work-log-backend.herokuapp.com";
-
   const [email, setemail] = useState('')
   const [password, setpassword] = useState('');
    
   const Submit = ()=>{
-    axios.post(`${url}/admin/loginuser`, {
+    axios.post(`${url}/employee/loginuser`, {
       email: email,
       password:password
     })
@@ -38,8 +37,8 @@ function Basic() {
         {
           localStorage.setItem("jwt", res.data.token);
           localStorage.setItem("id", res.data._id);
-          localStorage.setItem("status","Admin");
-          window.location= "/user/seeUser"
+          localStorage.setItem("status", "Employee");
+          window.location= "/task"
         }
         else{
           alert("Login Again")
@@ -67,7 +66,7 @@ function Basic() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Sign in
+            Employee Sign in
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
@@ -85,16 +84,16 @@ function Basic() {
             </MDBox>
             <MDBox mt={3} mb={1} textAlign="center">
               <MDTypography variant="button" color="text">
-  
+    
                 <MDTypography
                   component={Link}
-                  to="/employeeSignin"
+                  to="/authentication/sign-in"
                   variant="button"
                   color="info"
                   fontWeight="medium"
                   textGradient
                 >
-                  Employee Login
+                  Admin Login
                 </MDTypography>
               </MDTypography>
             </MDBox>
